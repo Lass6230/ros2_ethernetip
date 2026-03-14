@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!--
+  Xacro macro for adding EtherNet/IP hardware to a URDF.
+
+  Usage in your robot description:
+
+    <xacro:include filename="$(find ethernetip_description)/urdf/ethernetip_system.xacro"/>
+    <xacro:ethernetip_system
+      name="my_eip"
+      config_file="$(find ethernetip_description)/config/example_devices.yaml"
+      joints="joint1 joint2 joint3"
+    />
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="ethernetip_system"
+    params="name config_file">
+
+    <ros2_control name="${name}" type="system">
+      <hardware>
+        <plugin>ethernetip_hardware_interface/EthernetIPSystem</plugin>
+        <param name="config_file">${config_file}</param>
+      </hardware>
+
+      <!-- Joint definitions should be added by the caller, e.g.:
+           <joint name="joint1">
+             <state_interface name="position"/>
+             <state_interface name="velocity"/>
+             <command_interface name="position"/>
+           </joint>
+      -->
+    </ros2_control>
+
+  </xacro:macro>
+
+</robot>

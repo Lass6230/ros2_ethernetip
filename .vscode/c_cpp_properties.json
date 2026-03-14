@@ -1,0 +1,28 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/lass6230/github/ethernet_ip_ws/install/ethernetip_hardware_interface/include/**",
+        "/home/lass6230/github/ethernet_ip_ws/install/ethernetip_generic_io_driver/include/**",
+        "/home/lass6230/github/ethernet_ip_ws/install/ethernetip_device_driver_interface/include/**",
+        "/home/lass6230/github/ethernet_ip_ws/install/ethernetip_master/include/**",
+        "/opt/ros/jazzy/include/**",
+        "/home/lass6230/github/ethernet_ip_ws/src/ros2_ethernetip/ethernetip_device_driver_interface/include/**",
+        "/home/lass6230/github/ethernet_ip_ws/src/ros2_ethernetip/ethernetip_generic_io_driver/include/**",
+        "/home/lass6230/github/ethernet_ip_ws/src/ros2_ethernetip/ethernetip_hardware_interface/include/**",
+        "/home/lass6230/github/ethernet_ip_ws/src/ros2_ethernetip/ethernetip_master/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

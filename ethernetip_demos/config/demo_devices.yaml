@@ -1,0 +1,32 @@
+# =============================================================================
+# Demo device description – minimal 2‑joint robot over EtherNet/IP
+# =============================================================================
+# Adjust the IP address and assembly numbers to match your actual hardware.
+
+devices:
+
+  - name: demo_robot
+    ip: 192.168.1.10
+    input_assembly: 101
+    output_assembly: 100
+    config_assembly: 1
+    rpi: 8ms
+    input_size: 8
+    output_size: 8
+    plugin: ethernetip_generic_io_driver/GenericIODevice
+
+    inputs:
+      - name: joint1_position
+        type: float32
+        offset: 0
+      - name: joint2_position
+        type: float32
+        offset: 4
+
+    outputs:
+      - name: joint1_command
+        type: float32
+        offset: 0
+      - name: joint2_command
+        type: float32
+        offset: 4

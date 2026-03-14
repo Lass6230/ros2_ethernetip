@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!--
+  Minimal URDF for a 2‑joint robot connected over EtherNet/IP.
+  This uses the xacro macro from ethernetip_system.xacro.
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="example_eip_robot">
+
+  <xacro:include filename="$(find ethernetip_description)/urdf/ethernetip_system.xacro"/>
+
+  <!-- Base link -->
+  <link name="base_link">
+    <visual>
+      <geometry><box size="0.1 0.1 0.1"/></geometry>
+    </visual>
+  </link>
+
+  <!-- Joint 1 -->
+  <joint name="joint1" type="revolute">
+    <parent link="base_link"/>
+    <child link="link1"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14" upper="3.14" velocity="1.0" effort="100"/>
+  </joint>
+  <link name="link1">
+    <visual>
+      <geometry><cylinder radius="0.05" length="0.3"/></geometry>
+    </visual>
+  </link>
+
+  <!-- Joint 2 -->
+  <joint name="joint2" type="revolute">
+    <parent link="link1"/>
+    <child link="link2"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-3.14" upper="3.14" velocity="1.0" effort="100"/>
+  </joint>
+  <link name="link2">
+    <visual>
+      <geometry><cylinder radius="0.05" length="0.3"/></geometry>
+    </visual>
+  </link>
+
+  <!-- EtherNet/IP hardware interface -->
+  <xacro:ethernetip_system
+    name="eip_system"
+    config_file="$(find ethernetip_description)/config/example_devices.yaml"
+  />
+
+  <!-- Map joints to ros2_control interfaces (added separately) -->
+  <!-- Joint interfaces are defined by the device YAML via the generic IO driver -->
+
+</robot>

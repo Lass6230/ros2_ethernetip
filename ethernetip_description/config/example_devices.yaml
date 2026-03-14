@@ -1,0 +1,142 @@
+# =============================================================================
+# Example EtherNet/IP device descriptions
+# =============================================================================
+# This file is loaded by EthernetIPSystem via the "config_file" hardware
+# parameter.  Every device listed here will get a ForwardOpen connection and
+# its assembly fields are mapped 1:1 to ros2_control interfaces.
+#
+# Supported field types:
+#   float32, float64, int8, uint8, int16, uint16, int32, uint32, bool
+#
+# For bool fields, "bit_offset" selects the bit within the byte at "offset".
+# =============================================================================
+
+devices:
+
+  # ---------------------------------------------------------------------------
+  # Example 1: Generic PLC IO module (e.g. Allen‑Bradley 1756‑EN2T)
+  # ---------------------------------------------------------------------------
+  - name: plc_io
+    ip: 192.168.1.100
+    input_assembly: 101
+    output_assembly: 100
+    config_assembly: 1
+    rpi: 10ms
+    input_size: 8
+    output_size: 8
+    plugin: ethernetip_generic_io_driver/GenericIODevice
+
+    inputs:
+      - name: digital_in_0
+        type: bool
+        offset: 0
+        bit_offset: 0
+
+      - name: digital_in_1
+        type: bool
+        offset: 0
+        bit_offset: 1
+
+      - name: analog_in_0
+        type: float32
+        offset: 4
+
+    outputs:
+      - name: digital_out_0
+        type: bool
+        offset: 0
+        bit_offset: 0
+
+      - name: digital_out_1
+        type: bool
+        offset: 0
+        bit_offset: 1
+
+      - name: analog_out_0
+        type: float32
+        offset: 4
+
+  # ---------------------------------------------------------------------------
+  # Example 2: Robot joint interface (e.g. Fanuc / KUKA EtherNet/IP adapter)
+  # ---------------------------------------------------------------------------
+  - name: robot
+    ip: 192.168.1.10
+    input_assembly: 101
+    output_assembly: 100
+    config_assembly: 1
+    rpi: 8ms
+    input_size: 24
+    output_size: 24
+    plugin: ethernetip_generic_io_driver/GenericIODevice
+
+    inputs:
+      - name: joint1_position
+        type: float32
+        offset: 0
+      - name: joint2_position
+        type: float32
+        offset: 4
+      - name: joint3_position
+        type: float32
+        offset: 8
+      - name: joint4_position
+        type: float32
+        offset: 12
+      - name: joint5_position
+        type: float32
+        offset: 16
+      - name: joint6_position
+        type: float32
+        offset: 20
+
+    outputs:
+      - name: joint1_command
+        type: float32
+        offset: 0
+      - name: joint2_command
+        type: float32
+        offset: 4
+      - name: joint3_command
+        type: float32
+        offset: 8
+      - name: joint4_command
+        type: float32
+        offset: 12
+      - name: joint5_command
+        type: float32
+        offset: 16
+      - name: joint6_command
+        type: float32
+        offset: 20
+
+  # ---------------------------------------------------------------------------
+  # Example 3: Servo drive (CIP Motion style)
+  # ---------------------------------------------------------------------------
+  - name: servo_drive
+    ip: 192.168.1.20
+    input_assembly: 101
+    output_assembly: 100
+    config_assembly: 1
+    rpi: 4ms
+    input_size: 12
+    output_size: 8
+    plugin: ethernetip_generic_io_driver/GenericIODevice
+
+    inputs:
+      - name: actual_position
+        type: float32
+        offset: 0
+      - name: actual_velocity
+        type: float32
+        offset: 4
+      - name: status_word
+        type: uint16
+        offset: 8
+
+    outputs:
+      - name: target_position
+        type: float32
+        offset: 0
+      - name: control_word
+        type: uint16
+        offset: 4

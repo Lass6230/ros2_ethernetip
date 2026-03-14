@@ -1,0 +1,10 @@
+<library path="ethernetip_generic_io_driver">
+  <class
+    name="ethernetip_generic_io_driver/GenericIODevice"
+    type="ethernetip_generic_io_driver::GenericIODevice"
+    base_class_type="ethernetip_device_driver_interface::EthernetIPDevice">
+    <description>
+      Generic assembly‑mapping driver for EtherNet/IP IO devices.
+    </description>
+  </class>
+</library>

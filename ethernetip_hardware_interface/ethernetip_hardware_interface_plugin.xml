@@ -1,0 +1,10 @@
+<library path="ethernetip_hardware_interface">
+  <class
+    name="ethernetip_hardware_interface/EthernetIPSystem"
+    type="ethernetip_hardware_interface::EthernetIPSystem"
+    base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Generic EtherNet/IP scanner hardware interface for ros2_control.
+    </description>
+  </class>
+</library>

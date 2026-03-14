@@ -1,0 +1,48 @@
+devices:
+  - name: test_plc
+    ip: "192.168.1.50"
+    input_assembly: 101
+    output_assembly: 100
+    config_assembly: 1
+    rpi: 8
+    input_size: 8
+    output_size: 4
+    inputs:
+      - name: sensor_value
+        type: float32
+        offset: 0
+      - name: sensor_status
+        type: uint16
+        offset: 4
+      - name: alarm_bit
+        type: bool
+        offset: 6
+        bit_offset: 0
+    outputs:
+      - name: actuator_cmd
+        type: float32
+        offset: 0
+    plugin: "ethernetip_generic_io_driver/GenericIODevice"
+
+  - name: test_drive
+    ip: "192.168.1.51"
+    input_assembly: 110
+    output_assembly: 111
+    config_assembly: 1
+    rpi: "4ms"
+    input_size: 8
+    output_size: 8
+    inputs:
+      - name: position
+        type: float32
+        offset: 0
+      - name: velocity
+        type: float32
+        offset: 4
+    outputs:
+      - name: target_position
+        type: float32
+        offset: 0
+      - name: target_velocity
+        type: float32
+        offset: 4
