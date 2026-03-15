@@ -38,15 +38,12 @@ CallbackReturn EthernetIPSystem::on_init(
     rclcpp::get_logger("EthernetIPSystem"),
     "on_init: config_file = %s", config_file_.c_str());
 
-  return CallbackReturn::SUCCESS;
-}
+  // ---- Early initialisation ------------------------------------------------
+  // The ResourceManager calls export_state/command_interfaces() right after
+  // on_init(), *before* the configure lifecycle transition.  Therefore we
+  // must parse the YAML and load device-driver plugins here so that the
+  // interface storage vectors are populated in time.
 
-// ---------------------------------------------------------------------------
-// on_configure
-// ---------------------------------------------------------------------------
-CallbackReturn EthernetIPSystem::on_configure(
-  const rclcpp_lifecycle::State & /*previous_state*/)
-{
   // 1. Parse the YAML
   if (!master_.loadConfig(config_file_)) {
     RCLCPP_ERROR(
@@ -55,7 +52,7 @@ CallbackReturn EthernetIPSystem::on_configure(
     return CallbackReturn::ERROR;
   }
 
-  // 2. Load device‑driver plugins via pluginlib
+  // 2. Load device-driver plugins via pluginlib
   pluginlib::ClassLoader<ethernetip_device_driver_interface::EthernetIPDevice>
     loader("ethernetip_device_driver_interface",
            "ethernetip_device_driver_interface::EthernetIPDevice");
@@ -88,13 +85,11 @@ CallbackReturn EthernetIPSystem::on_configure(
   command_index_.clear();
 
   for (const auto & plugin : device_plugins_) {
-    // State interfaces
     for (const auto & si : plugin->exportStateInterfaces()) {
       std::string key = si.joint_name + "/" + si.interface_name;
       state_index_[key] = state_values_.size();
       state_values_.push_back(0.0);
     }
-    // Command interfaces
     for (const auto & ci : plugin->exportCommandInterfaces()) {
       std::string key = ci.joint_name + "/" + ci.interface_name;
       command_index_[key] = command_values_.size();
@@ -104,8 +99,33 @@ CallbackReturn EthernetIPSystem::on_configure(
 
   RCLCPP_INFO(
     rclcpp::get_logger("EthernetIPSystem"),
-    "Configured %zu device(s), %zu state ifaces, %zu cmd ifaces",
+    "Initialised %zu device(s), %zu state ifaces, %zu cmd ifaces",
     device_plugins_.size(), state_values_.size(), command_values_.size());
+
+  return CallbackReturn::SUCCESS;
+}
+
+// ---------------------------------------------------------------------------
+// on_configure
+// ---------------------------------------------------------------------------
+CallbackReturn EthernetIPSystem::on_configure(
+  const rclcpp_lifecycle::State & /*previous_state*/)
+{
+  // All heavy lifting (YAML parse, plugin load, interface storage) was done
+  // in on_init() because the ResourceManager calls export_*_interfaces()
+  // right after on_init(), before on_configure().
+  //
+  // on_configure() simply validates that everything is ready.
+  if (device_plugins_.empty()) {
+    RCLCPP_ERROR(
+      rclcpp::get_logger("EthernetIPSystem"),
+      "No device plugins loaded – was on_init() successful?");
+    return CallbackReturn::ERROR;
+  }
+
+  RCLCPP_INFO(
+    rclcpp::get_logger("EthernetIPSystem"),
+    "Configured: %zu device(s) ready", device_plugins_.size());
 
   return CallbackReturn::SUCCESS;
 }

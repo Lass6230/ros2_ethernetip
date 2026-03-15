@@ -196,16 +196,10 @@ void EthernetIPMaster::cyclicLoop()
   while (running_) {
     const auto start = std::chrono::steady_clock::now();
 
-    // ---- receive UDP input assemblies ------------------------------------
-    // TODO(phase1): call EIPScanner ReceiveIOData per connection
+    // ---- process IO for each device (send output, receive input) ----------
     for (auto & dev : devices_) {
-      // Placeholder: in the real implementation the EIPScanner implicit
-      // messaging callback writes into the device's input buffer.
-      dev->watchdog().feed();
+      dev->tick(std::chrono::milliseconds(1));
     }
-
-    // ---- send UDP output assemblies --------------------------------------
-    // TODO(phase1): call EIPScanner SendIOData per connection
 
     // ---- sleep until next period -----------------------------------------
     const auto elapsed = std::chrono::steady_clock::now() - start;

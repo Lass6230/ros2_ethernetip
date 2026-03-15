@@ -10,6 +10,7 @@
 #include <ConnectionManager.h>
 #include <IOConnection.h>
 #include <cip/connectionManager/ConnectionParameters.h>
+#include <cip/connectionManager/NetworkConnectionParams.h>
 #include <cip/Types.h>
 
 namespace ethernetip_master
@@ -96,16 +97,37 @@ bool DeviceConnection::connect()
 
     // Set up connection parameters
     auto & p = impl_->conn_params;
+
+    // Full EPATH encoding for the connection path:
+    //   0x20 0x04         – Logical Segment, Class = Assembly (0x04)
+    //   0x24 <config>     – Logical Segment, Instance = config assembly
+    //   0x2C <output>     – Logical Segment, Connection Point = O→T assembly
+    //   0x2C <input>      – Logical Segment, Connection Point = T→O assembly
     p.connectionPath = {
-      static_cast<uint8_t>(config_.config_assembly),
-      static_cast<uint8_t>(config_.output_assembly),
-      static_cast<uint8_t>(config_.input_assembly)};
+      0x20, 0x04,
+      0x24, static_cast<uint8_t>(config_.config_assembly),
+      0x2C, static_cast<uint8_t>(config_.output_assembly),
+      0x2C, static_cast<uint8_t>(config_.input_assembly)};
+
+    using NCP = eipScanner::cip::connectionManager::NetworkConnectionParams;
+
+    p.o2tRealTimeFormat = true;
+    p.originatorVendorId = 1;
+    p.originatorSerialNumber = 0x12345;
+    p.transportTypeTrigger |= NCP::CLASS1;
+
     p.o2tRPI = static_cast<uint32_t>(config_.rpi_ms * 1000);  // microseconds
     p.t2oRPI = static_cast<uint32_t>(config_.rpi_ms * 1000);
-    p.o2tNetworkConnectionParams =
-      static_cast<uint32_t>(0x4000 | output_buffer_.size());  // fixed size
-    p.t2oNetworkConnectionParams =
-      static_cast<uint32_t>(0x4000 | input_buffer_.size());
+
+    p.o2tNetworkConnectionParams = 0;
+    p.o2tNetworkConnectionParams |= NCP::P2P;
+    p.o2tNetworkConnectionParams |= NCP::SCHEDULED_PRIORITY;
+    p.o2tNetworkConnectionParams |= static_cast<uint32_t>(output_buffer_.size());
+
+    p.t2oNetworkConnectionParams = 0;
+    p.t2oNetworkConnectionParams |= NCP::P2P;
+    p.t2oNetworkConnectionParams |= NCP::SCHEDULED_PRIORITY;
+    p.t2oNetworkConnectionParams |= static_cast<uint32_t>(input_buffer_.size());
 
     // ForwardOpen – returns a weak_ptr to the IO connection
     impl_->io_connection = impl_->connection_manager->forwardOpen(
@@ -204,6 +226,25 @@ std::string DeviceConnection::stateString() const
     case State::kError:        return "Error";
     default:                   return "Unknown";
   }
+}
+
+// ---------------------------------------------------------------------------
+// tick – one IO cycle: push output data, handle UDP send/receive
+// ---------------------------------------------------------------------------
+void DeviceConnection::tick(std::chrono::milliseconds timeout)
+{
+  if (state_ != State::kConnected || !impl_) {
+    return;
+  }
+
+  // Push the current output buffer to the IO connection for the next send
+  if (auto io = impl_->io_connection.lock()) {
+    std::lock_guard<std::mutex> lk(output_mutex_);
+    io->setDataToSend(output_buffer_);
+  }
+
+  // Let the ConnectionManager handle UDP send/receive
+  impl_->connection_manager->handleConnections(timeout);
 }
 
 }  // namespace ethernetip_master

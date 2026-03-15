@@ -17,6 +17,9 @@ struct ExplicitMessaging::Impl
   eipScanner::MessageRouter router;
 };
 
+ExplicitMessaging::ExplicitMessaging() = default;
+ExplicitMessaging::~ExplicitMessaging() = default;
+
 bool ExplicitMessaging::openSession(const std::string & ip)
 {
   try {

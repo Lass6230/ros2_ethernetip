@@ -1,0 +1,2 @@
+/usr/bin/ar qc libSAMPLE_APP.a CMakeFiles/SAMPLE_APP.dir/sampleapplication.c.o
+/usr/bin/ranlib libSAMPLE_APP.a

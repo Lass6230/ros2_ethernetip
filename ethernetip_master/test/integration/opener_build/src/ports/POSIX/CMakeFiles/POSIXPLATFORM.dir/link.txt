@@ -1,0 +1,2 @@
+/usr/bin/ar qc libPOSIXPLATFORM.a CMakeFiles/POSIXPLATFORM.dir/networkhandler.c.o CMakeFiles/POSIXPLATFORM.dir/opener_error.c.o CMakeFiles/POSIXPLATFORM.dir/networkconfig.c.o
+/usr/bin/ranlib libPOSIXPLATFORM.a

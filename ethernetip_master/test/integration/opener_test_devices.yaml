@@ -1,0 +1,49 @@
+# OpENer integration test – device config matching the POSIX sample application
+#
+# OpENer POSIX sample assemblies:
+#   Input  assembly  100  (T→O, 32 bytes – data FROM adapter TO scanner)
+#   Output assembly  150  (O→T, 32 bytes – data FROM scanner TO adapter)
+#   Config assembly  151  (10 bytes)
+#
+# The sample app *mirrors* output data to input data:
+#   what the scanner writes to assembly 150 appears in assembly 100 on
+#   the next cycle.  This makes it easy to verify round‑trip data integrity.
+#
+# The scanner (our library) connects to 10.10.10.2 (veth pair) when OpENer
+# is started in the "ns_opener" network namespace.
+devices:
+  - name: opener_veth
+    ip: "10.10.10.2"
+    input_assembly: 100
+    output_assembly: 150
+    config_assembly: 151
+    rpi: 100
+    input_size: 32
+    output_size: 32
+    inputs:
+      - name: mirror_float
+        type: float32
+        offset: 0
+      - name: mirror_uint32
+        type: uint32
+        offset: 4
+      - name: mirror_int16
+        type: int16
+        offset: 8
+      - name: mirror_uint8
+        type: uint8
+        offset: 10
+    outputs:
+      - name: mirror_float
+        type: float32
+        offset: 0
+      - name: mirror_uint32
+        type: uint32
+        offset: 4
+      - name: mirror_int16
+        type: int16
+        offset: 8
+      - name: mirror_uint8
+        type: uint8
+        offset: 10
+    plugin: "ethernetip_generic_io_driver/GenericIODevice"

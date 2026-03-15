@@ -132,6 +132,31 @@ if(BUILD_TESTING)
   target_link_libraries(test_yaml_loading ${PROJECT_NAME})
   target_compile_definitions(test_yaml_loading PRIVATE
     TEST_FIXTURES_DIR="${TEST_FIXTURES_DIR}")
+
+  # --- Integration tests (opt‑in) ---
+  option(BUILD_INTEGRATION_TESTS
+    "Build the OpENer integration test (requires a running OpENer adapter)" OFF)
+  if(BUILD_INTEGRATION_TESTS)
+    # Library-level test (ExplicitMessaging + EthernetIPMaster)
+    add_executable(test_opener_connection
+      test/integration/test_opener_connection.cpp)
+    target_link_libraries(test_opener_connection ${PROJECT_NAME})
+    install(TARGETS test_opener_connection
+      DESTINATION lib/${PROJECT_NAME})
+
+    # ros2_control-level test (ResourceManager + EthernetIPSystem plugin)
+    find_package(hardware_interface REQUIRED)
+    find_package(lifecycle_msgs REQUIRED)
+    add_executable(test_ros2_control_opener
+      test/integration/test_ros2_control_opener.cpp)
+    ament_target_dependencies(test_ros2_control_opener
+      rclcpp
+      hardware_interface
+      lifecycle_msgs
+    )
+    install(TARGETS test_ros2_control_opener
+      DESTINATION lib/${PROJECT_NAME})
+  endif()
 endif()
 
 ament_package()

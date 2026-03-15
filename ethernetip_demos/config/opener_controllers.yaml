@@ -1,0 +1,30 @@
+# =============================================================================
+# Controller configuration for the OpENer demo
+# =============================================================================
+# Uses GpioCommandController to expose command/state topics for generic IO.
+
+controller_manager:
+  ros__parameters:
+    update_rate: 50  # Hz
+
+    gpio_command_controller:
+      type: gpio_controllers/GpioCommandController
+
+gpio_command_controller:
+  ros__parameters:
+    gpios:
+      - opener_io
+    command_interfaces:
+      opener_io:
+        interfaces:
+          - mirror_float
+          - mirror_uint32
+          - mirror_int16
+          - mirror_uint8
+    state_interfaces:
+      opener_io:
+        interfaces:
+          - mirror_float
+          - mirror_uint32
+          - mirror_int16
+          - mirror_uint8

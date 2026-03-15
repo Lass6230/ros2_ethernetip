@@ -1,6 +1,7 @@
 #ifndef ETHERNETIP_MASTER__DEVICE_CONNECTION_HPP_
 #define ETHERNETIP_MASTER__DEVICE_CONNECTION_HPP_
 
+#include <chrono>
 #include <cstdint>
 #include <memory>
 #include <mutex>
@@ -59,6 +60,10 @@ public:
   void updateInputBuffer(const uint8_t * data, std::size_t len);
   /// Called by the master before sending UDP output data.
   const std::vector<uint8_t> & outputBuffer() const;
+
+  /// Process one IO cycle: push output data and handle UDP send/receive.
+  /// Must be called periodically (at least as often as the RPI).
+  void tick(std::chrono::milliseconds timeout);
 
   // --- accessors ------------------------------------------------------------
   const DeviceConfig & config() const { return config_; }

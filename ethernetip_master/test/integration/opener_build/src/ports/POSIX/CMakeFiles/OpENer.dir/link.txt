@@ -1,0 +1,1 @@
+/usr/bin/cc  -Wall -Wconversion -std=c99 -Werror=implicit-function-declaration -fcommon -O3 -DNDEBUG CMakeFiles/OpENer.dir/main.c.o -o OpENer  ../libPLATFORM_GENERIC.a libPOSIXPLATFORM.a ../../cip/libCIP.a ../../utils/libUtils.a sample_application/libSAMPLE_APP.a ../../enet_encap/libENET_ENCAP.a ../nvdata/libNVDATA.a -lrt -lcap -lpthread ../../utils/libUtils.a 

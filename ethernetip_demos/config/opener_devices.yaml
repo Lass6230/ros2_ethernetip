@@ -1,0 +1,49 @@
+# =============================================================================
+# OpENer demo – device config matching the OpENer POSIX sample application
+# =============================================================================
+# OpENer assemblies:
+#   Input  assembly  100  (T→O, 32 bytes – from adapter to scanner)
+#   Output assembly  150  (O→T, 32 bytes – from scanner to adapter)
+#   Config assembly  151  (10 bytes)
+#
+# The sample app mirrors output→input each cycle.
+# Default IP: 10.10.10.2 (veth pair with network namespace)
+
+devices:
+  - name: opener_io
+    ip: "10.10.10.2"
+    input_assembly: 100
+    output_assembly: 150
+    config_assembly: 151
+    rpi: 100
+    input_size: 32
+    output_size: 32
+    plugin: "ethernetip_generic_io_driver/GenericIODevice"
+
+    inputs:
+      - name: mirror_float
+        type: float32
+        offset: 0
+      - name: mirror_uint32
+        type: uint32
+        offset: 4
+      - name: mirror_int16
+        type: int16
+        offset: 8
+      - name: mirror_uint8
+        type: uint8
+        offset: 10
+
+    outputs:
+      - name: mirror_float
+        type: float32
+        offset: 0
+      - name: mirror_uint32
+        type: uint32
+        offset: 4
+      - name: mirror_int16
+        type: int16
+        offset: 8
+      - name: mirror_uint8
+        type: uint8
+        offset: 10

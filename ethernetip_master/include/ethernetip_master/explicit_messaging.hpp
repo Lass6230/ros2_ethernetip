@@ -14,7 +14,8 @@ namespace ethernetip_master
 class ExplicitMessaging
 {
 public:
-  ExplicitMessaging() = default;
+  ExplicitMessaging();
+  ~ExplicitMessaging();
 
   /// Open a TCP session to \p ip.
   bool openSession(const std::string & ip);

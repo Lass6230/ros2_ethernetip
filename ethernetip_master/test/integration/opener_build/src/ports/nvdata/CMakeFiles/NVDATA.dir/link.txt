@@ -1,0 +1,2 @@
+/usr/bin/ar qc libNVDATA.a CMakeFiles/NVDATA.dir/nvdata.c.o CMakeFiles/NVDATA.dir/conffile.c.o CMakeFiles/NVDATA.dir/nvqos.c.o CMakeFiles/NVDATA.dir/nvtcpip.c.o
+/usr/bin/ranlib libNVDATA.a

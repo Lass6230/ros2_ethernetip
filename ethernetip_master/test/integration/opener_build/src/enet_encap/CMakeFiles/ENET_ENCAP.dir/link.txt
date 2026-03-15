@@ -1,0 +1,2 @@
+/usr/bin/ar qc libENET_ENCAP.a CMakeFiles/ENET_ENCAP.dir/cpf.c.o CMakeFiles/ENET_ENCAP.dir/encap.c.o CMakeFiles/ENET_ENCAP.dir/endianconv.c.o
+/usr/bin/ranlib libENET_ENCAP.a

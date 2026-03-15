@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!--
+  Minimal URDF for the OpENer demo.
+  Uses <gpio> for generic IO (no kinematic joints needed).
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="opener_demo">
+
+  <xacro:arg name="config_file" default=""/>
+
+  <link name="base_link">
+    <visual>
+      <geometry><box size="0.1 0.1 0.1"/></geometry>
+    </visual>
+  </link>
+
+  <!-- ros2_control hardware interface -->
+  <ros2_control name="eip_opener_system" type="system">
+    <hardware>
+      <plugin>ethernetip_hardware_interface/EthernetIPSystem</plugin>
+      <param name="config_file">$(arg config_file)</param>
+    </hardware>
+
+    <!-- GPIO name must match the device "name" in the YAML -->
+    <gpio name="opener_io">
+      <state_interface name="mirror_float"/>
+      <state_interface name="mirror_uint32"/>
+      <state_interface name="mirror_int16"/>
+      <state_interface name="mirror_uint8"/>
+      <command_interface name="mirror_float"/>
+      <command_interface name="mirror_uint32"/>
+      <command_interface name="mirror_int16"/>
+      <command_interface name="mirror_uint8"/>
+    </gpio>
+  </ros2_control>
+
+</robot>
